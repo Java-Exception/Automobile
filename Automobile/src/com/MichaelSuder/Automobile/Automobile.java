@@ -17,7 +17,7 @@ class Automobile {
 	  }
 
 	  public String toString() {
-	    return "Make: "+make+ " Price: "+price+" Sales Tax: "+salesTax;
+	    return "Make: "+make+ " \nPrice: "+price+" \nSales Tax: "+salesTax;
 	  }
 
 	}

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -27,6 +28,7 @@ public class Project2 extends JFrame {
 	private JTextField txtSalesPrice;
 	private JTextField txtMilesPerGallon;
 	private JTextField txtWeight;
+	private int carIndex = 0;
 
 	/**
 	 * Launch the application.
@@ -44,17 +46,20 @@ public class Project2 extends JFrame {
 		});
 	}
 
-	
-	public String getSelected() {
-		
-		return null;
+	public String parseString(int i) {
+		return "" + i;
 	}
+	
+	public String parseString(double d) {
+		return "" + d;
+	}
+	
+
 	/**
 	 * Create the frame.
 	 */
 	public Project2() {
-		
-		ButtonGroup bg = new ButtonGroup();
+		setTitle("Car Tax Calculator");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	    } catch (Exception e) {
@@ -69,10 +74,13 @@ public class Project2 extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblMakeAndModel = new JLabel("Make and Model");
-		lblMakeAndModel.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblMakeAndModel.setBounds(112, 21, 123, 21);
-		contentPane.add(lblMakeAndModel);
+		Automobile[] cars = new Automobile[5];
+		ButtonGroup bg = new ButtonGroup();
+		
+		JLabel lblMakeModel = new JLabel("Make and Model");
+		lblMakeModel.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblMakeModel.setBounds(112, 21, 123, 21);
+		contentPane.add(lblMakeModel);
 		
 		JLabel lblSalesPrice = new JLabel("Sales Price");
 		lblSalesPrice.setFont(new Font("Verdana", Font.BOLD, 12));
@@ -97,37 +105,22 @@ public class Project2 extends JFrame {
 		panel.setLayout(null);
 		
 		JRadioButton otherButton = new JRadioButton("Other");
-		otherButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 		otherButton.setBounds(6, 63, 63, 25);
 		panel.add(otherButton);
-		otherButton.setFont(new Font("Verdana", Font.BOLD, 12));
 		bg.add(otherButton);
+		otherButton.setFont(new Font("Verdana", Font.BOLD, 12));
 		
 		JRadioButton electricButton = new JRadioButton("Electric");
-		electricButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 		electricButton.setBounds(6, 35, 75, 25);
 		panel.add(electricButton);
-		electricButton.setFont(new Font("Verdana", Font.BOLD, 12));
 		bg.add(electricButton);
+		electricButton.setFont(new Font("Verdana", Font.BOLD, 12));
 
 		JRadioButton hybridButton = new JRadioButton("Hybrid");
-		hybridButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Hybrid");
-			}
-		});
 		hybridButton.setBounds(6, 7, 69, 25);
 		panel.add(hybridButton);
-		hybridButton.setFont(new Font("Verdana", Font.BOLD, 12));
 		bg.add(hybridButton);
+		hybridButton.setFont(new Font("Verdana", Font.BOLD, 12));
 
 		txtMilesPerGallon = new JTextField();
 		txtMilesPerGallon.setFont(new Font("Verdana", Font.PLAIN, 12));
@@ -151,11 +144,69 @@ public class Project2 extends JFrame {
 		lblNewLabel.setBounds(89, 40, 122, 14);
 		panel.add(lblNewLabel);
 		
+		// Displays sales tax
+		JLabel lblSalesTax = new JLabel("");
+		lblSalesTax.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblSalesTax.setBounds(255, 212, 146, 30);
+		contentPane.add(lblSalesTax);
+		
+
 		
 		JButton btnComputeSalesTax = new JButton("Compute Sales Tax");
 		btnComputeSalesTax.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (otherButton.isSelected()) {
+					int price = 0;
+					try {
+						price = Integer.parseInt(txtSalesPrice.getText());					
+					} catch (Exception except) {
+						except.printStackTrace();
+					}
+					Automobile other = new Automobile(txtMakeModel.getText(), price);
+					
+					lblSalesTax.setText(parseString(other.salesTax(price)));
+					if(carIndex < 5) {
+						cars[carIndex] = other;
+						carIndex += 1;				
+					}
+				}
+
+				if (hybridButton.isSelected()) {
+					int price = 0;
+					double mpg = 0;
+					StringTokenizer str = new StringTokenizer(txtMakeModel.getText());
+					try {
+						price = Integer.parseInt(txtSalesPrice.getText());	
+						mpg = Double.parseDouble(txtMilesPerGallon.getText());
+					} catch (Exception except) {
+						except.printStackTrace();
+					}
+					Hybrid hybrid = new Hybrid(str.nextToken(), str.nextToken(), price, mpg);
+					lblSalesTax.setText(parseString(hybrid.salesTax(price)));
+					if(carIndex < 5) {
+						cars[carIndex] = hybrid;
+						carIndex += 1;				
+					}
+	
+				}
+				if (electricButton.isSelected()) {
+					int price = 0;
+					int weight = 0;
+					
+					StringTokenizer str = new StringTokenizer(txtMakeModel.getText());
+					try {
+						price = Integer.parseInt(txtSalesPrice.getText());	
+						weight = Integer.parseInt(txtWeight.getText());
+					} catch (Exception except) {
+						except.printStackTrace();
+					}
+					Electric ec = new Electric(str.nextToken(), str.nextToken(), price, weight);
+					lblSalesTax.setText(parseString(ec.salesTax(price)));
+					if(carIndex < 5) {
+						cars[carIndex] = ec;
+						carIndex += 1;				
+					}		
+				}
 			}
 		});
 		btnComputeSalesTax.setFont(new Font("Verdana", Font.BOLD, 12));
@@ -176,13 +227,20 @@ public class Project2 extends JFrame {
 		contentPane.add(btnClearFields);
 		
 		JButton btnDisplayReport = new JButton("Display Report");
+		btnDisplayReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (Automobile car : cars) {
+					if (car == null) continue;
+					System.out.println(car);
+					System.out.println("\n\n");
+				}
+			}
+		});
 		btnDisplayReport.setFont(new Font("Verdana", Font.BOLD, 12));
 		btnDisplayReport.setBounds(252, 252, 149, 31);
 		contentPane.add(btnDisplayReport);
 		
-		Panel emptyButtonPanel = new Panel();
-		emptyButtonPanel.setBounds(251, 212, 150, 30);
-		contentPane.add(emptyButtonPanel);
 		
 	}
+
 }

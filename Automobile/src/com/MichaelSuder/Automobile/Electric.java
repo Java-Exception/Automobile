@@ -24,8 +24,8 @@ class Electric extends Automobile {
 	  }
 
 	  public String toString() {
-	    return "Make: "+make+" Model: "+model +" Price: "+price+" Sales Tax: "+salesTax +
-	    " Weight: " + weight;
+	    return "Make and Model: "+make+" "+model +"\nPrice: "+price+" \nSales Tax: "+salesTax +
+	    " \nWeight: " + weight;
 	    }
 
 	}

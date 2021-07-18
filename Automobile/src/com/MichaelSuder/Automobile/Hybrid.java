@@ -25,7 +25,7 @@ class Hybrid extends Automobile {
 	  }
 
 	  public String toString() {
-	    return "Make: "+make+" Model: "+model +" Price: "+price+" Sales Tax: " + salesTax + " Miles Per Galon: " + milesPerGalon;
+	    return "Make and Model: "+make+" "+model +" \nPrice: "+price+" \nSales Tax: " + salesTax + " \nMiles Per Galon: " + milesPerGalon;
 	    }
 
 	}
